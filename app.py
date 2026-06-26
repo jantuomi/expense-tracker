@@ -109,8 +109,8 @@ h1,h2{margin-bottom:.5rem}
 a{color:#0066cc}
 form{margin-bottom:1rem}
 label{display:block;margin:.3rem 0 .1rem;font-size:1rem}
-input[type=text],input[type=number],input[type=date],select{width:100%;padding:.4rem;border:1px solid #ccc;border-radius:4px;font-size:1rem}
-input[type=date]{min-width:100%;height:33px;}
+input[type=text],input[type=number],input[type=date],input[type=time],select{width:100%;padding:.4rem;border:1px solid #ccc;border-radius:4px;font-size:1rem}
+input[type=date],input[type=time]{min-width:100%;height:33px;}
 button{padding:.5rem 1rem;background:#0066cc;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:1rem;margin-top:.5rem}
 button:hover{background:#0052a3}
 .section{background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:1rem;margin-bottom:1rem}
@@ -237,7 +237,8 @@ class Handler(BaseHTTPRequestHandler):
         prefill_desc = ""
         prefill_amount = ""
         prefill_payer = None
-        prefill_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        prefill_date = ""
+        prefill_time = ""
 
         if copy_id:
             copy_exp = conn.execute(
@@ -248,6 +249,7 @@ class Handler(BaseHTTPRequestHandler):
             prefill_amount = f"{copy_exp['amount']:.2f}"
             prefill_payer = copy_exp["paid_by"]
             prefill_date = copy_exp["created_at"][:10]
+            prefill_time = copy_exp["created_at"][11:16] if len(copy_exp["created_at"]) > 10 else "00:00"
             for s in conn.execute(
                 "SELECT user_id, percentage FROM expense_shares WHERE expense_id=?",
                 (copy_exp["id"],),
@@ -282,7 +284,8 @@ class Handler(BaseHTTPRequestHandler):
             form += "</select>"
             form += f'<label>Description</label><input type="text" name="description" value="{escape(prefill_desc)}" required>'
             form += f'<div class="row"><div><label>Amount</label><input type="number" name="amount" step="0.01" min="0.01" value="{prefill_amount}" required></div>'
-            form += f'<div><label>Date</label><input type="date" name="date" value="{prefill_date}" required></div></div>'
+            form += f'<div><label>Date</label><input type="date" name="date" value="{prefill_date}" required></div>'
+            form += f'<div><label>Time</label><input type="time" name="time" value="{prefill_time}" required></div></div>'
             form += '<label>Split between</label><div class="shares">'
             for u in users:
                 checked = (
@@ -301,6 +304,7 @@ class Handler(BaseHTTPRequestHandler):
                 form += f'<input type="number" name="pct_{u["id"]}" step="0.01" min="0" max="100" required{pct_val}> %</div>'
             form += "</div>"
             form += "<button>Add Expense</button></form>"
+            form += '<script>var n=new Date(),d=document.querySelector("[name=date]"),t=document.querySelector("[name=time]");if(!d.value)d.value=n.toISOString().slice(0,10);if(!t.value)t.value=("0"+n.getHours()).slice(-2)+":"+("0"+n.getMinutes()).slice(-2);</script>'
         form += "</div>"
 
         # Debt status
@@ -319,7 +323,8 @@ class Handler(BaseHTTPRequestHandler):
             log_html += "<table><tr><th>Date</th><th>Payer</th><th>Description</th><th>Amount</th><th></th></tr>"
             for e in expenses:
                 d = e["created_at"][:10]
-                log_html += f"<tr><td>{d}</td><td>{escape(e['payer'])}</td><td>{escape(e['description'])}</td><td>{e['amount']:.2f}</td>"
+                t = e["created_at"][11:16] if len(e["created_at"]) > 10 else ""
+                log_html += f'<tr><td>{d}<br><small style="color:#888">{t}</small></td><td>{escape(e["payer"])}</td><td>{escape(e["description"])}</td><td>{e["amount"]:.2f}</td>'
                 log_html += (
                     f'<td class="actions"><a href="/{gid}?copy={e["id"]}">✎</a> '
                 )
@@ -390,7 +395,9 @@ class Handler(BaseHTTPRequestHandler):
 
         final = [(uid, pct) for uid, pct in participants if pct > 0]
 
-        now = data.get("date", [datetime.now(timezone.utc).strftime("%Y-%m-%d")])[0]
+        date = data.get("date", [datetime.now(timezone.utc).strftime("%Y-%m-%d")])[0]
+        time = data.get("time", [datetime.now(timezone.utc).strftime("%H:%M")])[0]
+        now = f"{date}T{time}"
         cur = conn.execute(
             "INSERT INTO expenses(group_id, paid_by, description, amount, created_at) VALUES(?,?,?,?,?)",
             (gid, paid_by, description, amount, now),

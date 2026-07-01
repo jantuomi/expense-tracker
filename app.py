@@ -13,6 +13,8 @@ from urllib.parse import parse_qs, urlparse
 DB = "expenses.db"
 PAGE_SIZE = 20
 BASE_URL = os.environ.get("EXPENSES_BASE_URL", "http://localhost:8000").rstrip("/")
+HOST = os.environ.get("HOST", "0.0.0.0")
+PORT = int(os.environ.get("PORT", "8000"))
 
 
 def get_db():
@@ -445,7 +447,6 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     init_db()
-    port = 8000
-    print(f"Running on http://localhost:{port}")
-    print("Visit http://localhost:{}/new to create a group".format(port))
-    HTTPServer(("", port), Handler).serve_forever()
+    print(f"Running on http://{HOST}:{PORT}")
+    print(f"Visit http://{HOST}:{PORT}/new to create a group")
+    HTTPServer((HOST, PORT), Handler).serve_forever()

@@ -112,7 +112,7 @@ a{color:#0066cc}
 form{margin-bottom:1rem}
 label{display:block;margin:.3rem 0 .1rem;font-size:1rem}
 input[type=text],input[type=number],input[type=date],input[type=time],select{width:100%;padding:.4rem;border:1px solid #ccc;border-radius:4px;font-size:1rem}
-input[type=date],input[type=time]{min-width:100%;height:33px;padding:0}
+input[type=date],input[type=time]{min-width:100%;height:33px;padding:0 4px;}
 button{padding:.5rem 1rem;background:#0066cc;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:1rem;margin-top:.5rem}
 button:hover{background:#0052a3}
 .section{background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:1rem;margin-bottom:1rem}

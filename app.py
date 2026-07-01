@@ -112,7 +112,7 @@ a{color:#0066cc}
 form{margin-bottom:1rem}
 label{display:block;margin:.3rem 0 .1rem;font-size:1rem}
 input[type=text],input[type=number],input[type=date],input[type=time],select{width:100%;padding:.4rem;border:1px solid #ccc;border-radius:4px;font-size:1rem}
-input[type=date],input[type=time]{min-width:100%;height:33px;}
+input[type=date],input[type=time]{min-width:100%;height:33px;padding:0}
 button{padding:.5rem 1rem;background:#0066cc;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:1rem;margin-top:.5rem}
 button:hover{background:#0052a3}
 .section{background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:1rem;margin-bottom:1rem}
@@ -251,7 +251,11 @@ class Handler(BaseHTTPRequestHandler):
             prefill_amount = f"{copy_exp['amount']:.2f}"
             prefill_payer = copy_exp["paid_by"]
             prefill_date = copy_exp["created_at"][:10]
-            prefill_time = copy_exp["created_at"][11:16] if len(copy_exp["created_at"]) > 10 else "00:00"
+            prefill_time = (
+                copy_exp["created_at"][11:16]
+                if len(copy_exp["created_at"]) > 10
+                else "00:00"
+            )
             for s in conn.execute(
                 "SELECT user_id, percentage FROM expense_shares WHERE expense_id=?",
                 (copy_exp["id"],),
@@ -322,7 +326,7 @@ class Handler(BaseHTTPRequestHandler):
         # Expense log
         log_html = '<div class="section log"><h2>Expenses</h2>'
         if expenses:
-            log_html += "<table><tr><th>Date</th><th>Payer</th><th>Description</th><th>Amount</th><th></th></tr>"
+            log_html += "<table><tr><th>Date</th><th>Who</th><th>What</th><th>Amount</th><th></th></tr>"
             for e in expenses:
                 d = e["created_at"][:10]
                 t = e["created_at"][11:16] if len(e["created_at"]) > 10 else ""

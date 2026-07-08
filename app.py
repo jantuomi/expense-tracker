@@ -10,8 +10,8 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs, urlparse
 
-DB = "expenses.db"
-PAGE_SIZE = 20
+PAGE_SIZE = int(os.environ.get("PAGE_SIZE", "20"))
+DB = os.environ.get("DB", "expenses.db")
 BASE_URL = os.environ.get("BASE_URL", "http://localhost:8000").rstrip("/")
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8000"))

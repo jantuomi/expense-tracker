@@ -110,13 +110,13 @@ body{font-family:system-ui,sans-serif;font-size:14px;max-width:900px;margin:0 au
 h1,h2{margin-bottom:.5rem}
 a{color:#0066cc}
 form{margin-bottom:1rem}
-label{display:block;margin:.3rem 0 .1rem;font-size:1rem}
-input[type=text],input[type=number],input[type=date],input[type=time],select{width:100%;padding:.4rem;border:1px solid #ccc;border-radius:4px;font-size:1rem}
+label{display:block;margin:.3rem 0 .1rem}
+input[type=text],input[type=number],input[type=date],input[type=time],select{width:100%;padding:.4rem;border:1px solid #ccc;border-radius:4px}
 input[type=date],input[type=time]{min-width:100%;height:33px;padding:0;}
-button{padding:.5rem 1rem;background:#0066cc;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:1rem;margin-top:.5rem}
+button{padding:.5rem 1rem;background:#0066cc;color:#fff;border:none;border-radius:4px;cursor:pointer;margin-top:.5rem}
 button:hover{background:#0052a3}
 .section{background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:1rem;margin-bottom:1rem}
-table{width:100%;border-collapse:collapse;font-size:1rem}
+table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:.2rem .4rem .2rem 0;white-space:nowrap}
 tr{border-bottom:1px solid #eee}
 td:nth-child(3),th:nth-child(3){max-width:300px;white-space:normal;word-break:break-word}

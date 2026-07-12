@@ -106,7 +106,7 @@ def compute_debts(group_id):
 
 CSS = """
 *{box-sizing:border-box;margin:0;}
-body{font-family:system-ui,sans-serif;max-width:900px;margin:0 auto;padding:1rem;color:#222;background:#fafafa}
+body{font-family:system-ui,sans-serif;font-size:14px;max-width:900px;margin:0 auto;padding:1rem;color:#222;background:#fafafa}
 h1,h2{margin-bottom:.5rem}
 a{color:#0066cc}
 form{margin-bottom:1rem}
@@ -125,13 +125,15 @@ td:nth-child(3),th:nth-child(3){max-width:300px;white-space:normal;word-break:br
 .share-item input[type=number]{width:4rem;margin-left:auto}
 .row{display:flex;gap:.5rem}.row>div{flex:1}
 .btn-del{background:none;border:none;color:#c00;cursor:pointer;padding:0;margin:0;}
-.actions{white-space:nowrap;vertical-align:middle}
-.actions a,.actions button{padding:8px;font-size:1.2rem;text-decoration:none;}
+.actions{white-space:nowrap;vertical-align:middle;padding-right:0!important}
+.actions a,.actions button{padding:4px;font-size:1.2rem;text-decoration:none;}
 .actions form{margin:0;}
 .page-nav{display:flex;gap:1rem;justify-content:center;margin-top:.5rem}
 .debt{padding:.3rem 0}
-.nav{margin-bottom:1rem;display:flex;align-items:center}
+.nav{margin-bottom:1rem;display:flex;align-items:center;flex-wrap:wrap}
 .nav h1{margin:0}
+.nav .nav-title{display:flex;flex-direction:column}
+.nav .group-id{font-size:.75rem;color:#888;font-weight:normal}
 .nav .links{margin-left:auto;display:flex;gap:1rem}
 .landing{margin:0 -1rem}
 @media(min-width:700px){.landing{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:0}.landing .log{grid-column:1/3};input[type=date],input[type=time]{padding:0 4px;}}
@@ -142,7 +144,7 @@ select{height:33px;}
 def html(title, body, group_id=None):
     nav = ""
     if group_id:
-        nav = f'<div class="nav"><h1>{title} <small style="font-weight:normal;font-size:.5em;color:#888">{group_id}</small></h1><div class="links"><a href="/{group_id}">Expenses</a> <a href="/{group_id}/settings">Settings</a></div></div>'
+        nav = f'<div class="nav"><div class="nav-title"><h1>{title}</h1><small class="group-id">{group_id}</small></div><div class="links"><a href="/{group_id}">Expenses</a> <a href="/{group_id}/settings">Settings</a></div></div>'
     return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="view-transition" content="same-origin"><title>{title} - {group_id}</title><style>{CSS}</style></head><body>{nav}{body}</body></html>"""
 
 

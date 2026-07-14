@@ -145,7 +145,7 @@ def html(title, body, group_id=None):
     nav = ""
     if group_id:
         nav = f'<div class="nav"><div class="nav-title"><h1>{title}</h1><small class="group-id">{group_id}</small></div><div class="links"><a href="/{group_id}">Expenses</a> <a href="/{group_id}/settings">Settings</a></div></div>'
-    return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="view-transition" content="same-origin"><title>{title} - {group_id}</title><style>{CSS}</style></head><body>{nav}{body}</body></html>"""
+    return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="view-transition" content="same-origin"><link rel="icon" type="image/png" href="/favicon.png"><title>{title} - {group_id}</title><style>{CSS}</style></head><body>{nav}{body}</body></html>"""
 
 
 def escape(s):
@@ -162,6 +162,9 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/") or "/"
         qs = parse_qs(parsed.query)
+
+        if path == "/favicon.png":
+            return self.serve_favicon()
 
         if path == "/new":
             return self.new_group()
@@ -199,6 +202,20 @@ class Handler(BaseHTTPRequestHandler):
 
         self.send_response(400)
         self.end_headers()
+
+    def serve_favicon(self):
+        fpath = os.path.join(os.path.dirname(__file__), "favicon.png")
+        try:
+            with open(fpath, "rb") as f:
+                data = f.read()
+            self.send_response(200)
+            self.send_header("Content-Type", "image/png")
+            self.send_header("Cache-Control", "public, max-age=86400")
+            self.end_headers()
+            self.wfile.write(data)
+        except FileNotFoundError:
+            self.send_response(404)
+            self.end_headers()
 
     def respond(self, code, content):
         self.send_response(code)
